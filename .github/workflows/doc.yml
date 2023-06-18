@@ -33,30 +33,34 @@ jobs:
         name: documentation
         path: build/doc/html/
 
+    - name: Debug
+      run: |
+        echo {{ github.event_name }}
+
     - name: Setup Pages
-      if: contains(github.ref, 'develop') && (github.event_name != 'pull_request_target')
+      if: contains(github.ref, 'develop') && (github.event_name != 'pull_request')
       uses: actions/configure-pages@v3
       with:
         enablement: true
 
     - name: Upload documentation to Github Pages
-      if: contains(github.ref, 'develop') && (github.event_name != 'pull_request_target')
+      if: contains(github.ref, 'develop') && (github.event_name != 'pull_request')
       uses: actions/upload-pages-artifact@v1
       with:
         path: build/doc/html/
 
     - name: Deploy to GitHub Pages
-      if: contains(github.ref, 'develop') && (github.event_name != 'pull_request_target')
+      if: contains(github.ref, 'develop') && (github.event_name != 'pull_request')
       uses: actions/deploy-pages@v2
 
     - name: Documentation coverage
-      if: github.event_name == 'pull_request_target'
+      if: github.event_name == 'pull_request'
       uses: "./.github/actions/build"
       with:
         target: coverxygen_summary
 
     - name: Documentation coverage report generation
-      if: github.event_name == 'pull_request_target'
+      if: github.event_name == 'pull_request'
       run: |
         echo "Documentation coverage report"      >  build/doc/doc-coverage.markdown.info
         echo ""                                   >> build/doc/doc-coverage.markdown.info
@@ -65,7 +69,7 @@ jobs:
         cat build/doc/doc-coverage.summary.info | grep -v - | tr ':' '|' | while read line; do echo "| $line |"; done >> build/doc/doc-coverage.markdown.info
 
     - name: Documentation coverage report
-      if: github.event_name == 'pull_request_target'
+      if: github.event_name == 'pull_request'
       uses: marocchino/sticky-pull-request-comment@v2
       with:
         recreate: true
