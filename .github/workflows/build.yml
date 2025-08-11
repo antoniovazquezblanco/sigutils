@@ -118,7 +118,7 @@ jobs:
       run: echo "::set-output name=date::$(date +'%Y-%m-%d')"
 
     - name: Download binaries
-      uses: actions/download-artifact@v4
+      uses: actions/download-artifact@v5
 
     - name: Release nightly
       if: github.ref == 'refs/heads/master'
